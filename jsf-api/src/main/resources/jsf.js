@@ -1606,7 +1606,24 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 20000 ) &&
          * @param element to eval
          * @ignore
          */
-        var doEval = function doEval(element) {
+        
+var doPortletPageState = function doPortletPageState(element,portletId) {
+  var pageState = '',
+  bridgePartialActionInit = bridgePartialActionInits[portletId];
+  for (var i = 0; i < element.childNodes.length; i++) {
+    pageState += element.childNodes[i].nodeValue;
+  };
+  bridgePartialActionInit.setPageState(pageState,'testRenderData');
+};
+var doExtension = function doExtension(element,partialResponseId) {
+  var childNodes = element.childNodes;
+  for (var i = 0; i < childNodes.length; i++) {
+    if (childNodes[i].localName == 'portlet-page-state') {
+      doPortletPageState(childNodes[i],partialResponseId);
+    };
+  };
+};
+var doEval = function doEval(element) {
             var evalText = '';
             var childNodes = element.childNodes;
             for (var i = 0; i < childNodes.length; i++) {
@@ -2348,6 +2365,22 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 20000 ) &&
              */
 
             request: function request(source, event, options) {
+var namingContainerId = source.id.substring(0, source.id.indexOf(':'));
+var bridgeHub = bridgeHubs[namingContainerId];
+if (options['javax.portlet.faces'] == 'partialAction') {
+  bridgeHub.startPartialAction().then(function (partialActionInit) {
+    var urlHiddenField = getEncodedUrlElement(source.form);
+    urlHiddenField.value = partialActionInit.url;
+    bridgePartialActionInits[namingContainerId] = partialActionInit;
+    jsf.ajax.requestImpl(source,event,options);
+  });
+}
+else {
+  jsf.ajax.requestImpl(source,event,options);
+}
+},
+requestImpl:function requestImpl(source,event,options){
+
 
                 var element, form;   //  Element variables
                 var all, none;
@@ -2877,6 +2910,8 @@ if (!((jsf && jsf.specversion && jsf.specversion >= 20000 ) &&
                                 doEval(changes[i]);
                                 break;
                             case "extension":
+doExtension(changes[i], partialResponseId);
+
                                 // no action
                                 break;
                             default:
