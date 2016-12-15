@@ -51,6 +51,7 @@ import java.util.Optional;
 import java.util.Queue;
 
 import javax.enterprise.context.ContextNotActiveException;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Annotated;
@@ -77,6 +78,20 @@ public final class CdiUtils {
         
     private final static Type VALIDATOR_TYPE = 
         new TypeLiteral<Validator<?>>() { private static final long serialVersionUID = 1L;}.getType();
+
+    private static final Class<? extends Annotation> REQUEST_SCOPED_CLASS;
+
+    static {
+       Class<? extends Annotation> requestScopedClass;
+       try {
+           requestScopedClass = (Class<? extends Annotation>)
+               Class.forName("javax.portlet.annotations.PortletRequestScoped");
+       }
+       catch (Throwable t) {
+           requestScopedClass = RequestScoped.class;
+       }
+       REQUEST_SCOPED_CLASS = requestScopedClass;
+    }
 
     /**
      * Constructor.
@@ -350,6 +365,10 @@ public final class CdiUtils {
         }
 
         return null;
+    }
+
+    public static Class<? extends Annotation> getRequestScopedClass() {
+        return REQUEST_SCOPED_CLASS;
     }
     
     /**

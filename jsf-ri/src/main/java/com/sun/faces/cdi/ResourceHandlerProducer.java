@@ -39,7 +39,6 @@
  */
 package com.sun.faces.cdi;
 
-import javax.enterprise.context.RequestScoped;
 import javax.faces.application.Application;
 import javax.faces.application.ResourceHandler;
 import javax.faces.context.FacesContext;
@@ -63,7 +62,7 @@ public class ResourceHandlerProducer extends CdiProducer<ResourceHandler> {
     
     public ResourceHandlerProducer() {
         super.name("resource")
-             .scope(RequestScoped.class)
+             .scope(CdiUtils.getRequestScopedClass())
              .beanClassAndType(ResourceHandler.class)
              .create(e -> FacesContext.getCurrentInstance().getApplication().getResourceHandler());
     }

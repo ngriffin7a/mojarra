@@ -42,7 +42,6 @@ package com.sun.faces.cdi;
 import java.lang.reflect.Type;
 import java.util.Map;
 
-import javax.enterprise.context.RequestScoped;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 
@@ -64,7 +63,7 @@ public class ViewMapProducer extends CdiProducer<Map<String, Object>> {
     
     public ViewMapProducer() {
         super.name("viewScope")
-             .scope(RequestScoped.class)
+             .scope(CdiUtils.getRequestScopedClass())
              .qualifiers(new ViewMapAnnotationLiteral())
              .types(
                  new ParameterizedTypeImpl(Map.class, new Type[]{String.class, Object.class}),

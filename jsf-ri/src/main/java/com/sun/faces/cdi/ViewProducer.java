@@ -39,7 +39,6 @@
  */
 package com.sun.faces.cdi;
 
-import javax.enterprise.context.RequestScoped;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 
@@ -61,7 +60,7 @@ public class ViewProducer extends CdiProducer<UIViewRoot> {
     
     public ViewProducer() {
         super.name("view")
-             .scope(RequestScoped.class)
+             .scope(CdiUtils.getRequestScopedClass())
              .types(UIViewRoot.class)
              .beanClass(UIViewRoot.class)
              .create(e -> FacesContext.getCurrentInstance().getViewRoot());
