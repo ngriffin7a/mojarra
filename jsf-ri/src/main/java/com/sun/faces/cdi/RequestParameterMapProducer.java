@@ -42,7 +42,6 @@ package com.sun.faces.cdi;
 import java.lang.reflect.Type;
 import java.util.Map;
 
-import javax.enterprise.context.RequestScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
@@ -64,7 +63,7 @@ public class RequestParameterMapProducer extends CdiProducer<Map<String, String>
     
     public RequestParameterMapProducer() {
         super.name("param")
-             .scope(RequestScoped.class)
+             .scope(CdiUtils.getRequestScopedClass())
              .qualifiers(new RequestParameterMapAnnotationLiteral())
              .types(
                  new ParameterizedTypeImpl(Map.class, new Type[]{String.class, String.class}),

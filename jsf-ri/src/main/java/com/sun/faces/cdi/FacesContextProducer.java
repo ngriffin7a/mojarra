@@ -39,7 +39,6 @@
  */
 package com.sun.faces.cdi;
 
-import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
 
 /**
@@ -60,7 +59,7 @@ public class FacesContextProducer extends CdiProducer<FacesContext> {
 
     public FacesContextProducer() {
         super.name("facesContext")
-             .scope(RequestScoped.class)
+             .scope(CdiUtils.getRequestScopedClass())
              .types(FacesContext.class)
              .beanClass(FacesContext.class)
              .create(e -> FacesContext.getCurrentInstance());
